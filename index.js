@@ -5,7 +5,7 @@ const { createReadStream } = require('fs');
 const gallery = require('./lib/gallery');
 
 // Register the tag
-hexo.extend.tag.register('gallery', gallery);
+gallery.register(hexo);
 
 // Inject the client-side assets
 hexo.extend.filter.register('after_generate', () => {
