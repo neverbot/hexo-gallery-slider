@@ -57,6 +57,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  /* Prevent focus outline */
+  outline: none;
+  /* Prevent scroll on focus */
+  scroll-margin: 0;
+  /* Prevent touch highlighting on mobile */
+  -webkit-tap-highlight-color: transparent;
 }
 
 .hexo-gallery-slider .btns svg {

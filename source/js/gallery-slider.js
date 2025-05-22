@@ -28,8 +28,14 @@ function galleries() {
     slider.style.width = `${width * Number(sliderWrap.dataset.totalSlides)}px`;
 
     // Event listeners
-    sliderWrap.querySelector('.next').addEventListener('click', () => slideRight(sliderWrap));
-    sliderWrap.querySelector('.previous').addEventListener('click', () => slideLeft(sliderWrap));
+    sliderWrap.querySelector('.next').addEventListener('click', (e) => {
+      e.preventDefault();
+      slideRight(sliderWrap);
+    });
+    sliderWrap.querySelector('.previous').addEventListener('click', (e) => {
+      e.preventDefault();
+      slideLeft(sliderWrap);
+    });
 
     // Create pagination
     const paginationList = sliderWrap.querySelector('.pagination-wrap ul');
