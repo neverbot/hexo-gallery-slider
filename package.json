@@ -1,0 +1,37 @@
+{
+  "name": "hexo-gallery-slider",
+  "version": "1.0.0",
+  "description": "A responsive gallery slider plugin for Hexo",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "npx eslint .",
+    "lint:fix": "npx eslint . --fix",
+    "lint:quiet": "npx eslint . --quiet"
+  },
+  "keywords": [
+    "hexo",
+    "plugin",
+    "gallery",
+    "slider"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "jquery": "^3.7.1"
+  },
+  "devDependencies": {
+    "@babel/eslint-parser": "^7.27.1",
+    "@eslint/js": "^9.27.0",
+    "eslint": "^9.27.0",
+    "eslint-config-prettier": "^10.1.5",
+    "eslint-import-resolver-node": "^0.3.9",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-jsonc": "^2.20.1",
+    "eslint-plugin-prettier": "^5.4.0",
+    "globals": "^16.1.0",
+    "jsonc-eslint-parser": "^2.4.0",
+    "prettier": "^3.5.3"
+  }
+}
