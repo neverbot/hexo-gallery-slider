@@ -18,7 +18,7 @@
   "author": "Your Name",
   "license": "MIT",
   "dependencies": {
-    "jquery": "^3.7.1"
+    "hexo-fontawesome": "^2.4.0"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.27.1",
