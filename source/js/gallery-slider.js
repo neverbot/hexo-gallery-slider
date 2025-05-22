@@ -159,16 +159,19 @@ function pagination(elem) {
   elem.find('.pagination-wrap ul li:eq(' + elem.data('pos') + ')').addClass('active');
 }
 
-// hack to wait until the DOM is really loaded
+// Function to initialize galleries once jQuery is available
+function initGalleries() {
+  if (typeof jQuery === 'undefined') {
+    // If jQuery is not loaded yet, wait and try again
+    setTimeout(initGalleries, 100);
+    return;
+  }
 
-// Helper function
-// const domReady = (cb) => {
-//   document.readyState === 'interactive' || document.readyState === 'complete'
-//     ? cb()
-//     : document.addEventListener('DOMContentLoaded', cb);
-// };
+  // Wait for window load to ensure images are loaded
+  $(window).on('load', function () {
+    galleries();
+  });
+}
 
-$(window).on('load', function () {
-  // domReady(galleries);
-  galleries();
-});
+// Start the initialization process
+initGalleries();
