@@ -100,7 +100,7 @@
   text-shadow: none;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  z-index: 100;
+  z-index: 1;
 }
 
 .hexo-gallery-slider .slider-wrap.active .next {
