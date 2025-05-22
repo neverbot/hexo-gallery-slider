@@ -1,20 +1,16 @@
-import globals from 'globals';
-import babelParser from '@babel/eslint-parser';
-import eslintJsonc from 'eslint-plugin-jsonc';
-import eslintJsoncParser from 'jsonc-eslint-parser';
-import prettier from 'eslint-plugin-prettier';
-import importPlugin from 'eslint-plugin-import';
-import js from '@eslint/js';
+const globals = require('globals');
+const babelParser = require('@babel/eslint-parser');
+const eslintJsonc = require('eslint-plugin-jsonc');
+const eslintJsoncParser = require('jsonc-eslint-parser');
+const prettier = require('eslint-plugin-prettier');
+const js = require('@eslint/js');
 
-export default [
+module.exports = [
   {
     // global ignores
-    // folders can only be ignored at the global level, per-cfg you must do: '**/dist/**/*'
     ignores: ['**/coverage/', '**/node_modules/'],
   },
-  // general defaults
   js.configs.recommended,
-  importPlugin.flatConfigs.recommended,
   {
     files: ['**/*.js'],
     rules: {
@@ -26,32 +22,22 @@ export default [
         },
       ],
       'no-console': 'warn',
-      'import/extensions': [
-        'warn',
-        'always',
-        {
-          js: 'always',
-          json: 'always',
-        },
-      ],
     },
     plugins: {
       prettier,
-      importPlugin,
     },
     languageOptions: {
       parser: babelParser,
       ecmaVersion: 2018,
-      sourceType: 'module',
+      sourceType: 'script',
       globals: {
         ...globals.browser,
         ...globals.mocha,
+        ...globals.node,
         hexo: 'writable',
       },
       parserOptions: {
         requireConfigFile: false,
-        allowImportExportEverywhere: true,
-
         ecmaFeatures: {
           experimentalObjectRestSpread: true,
         },

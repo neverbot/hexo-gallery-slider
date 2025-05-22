@@ -1,9 +1,8 @@
-import { join, dirname } from 'path';
-import { createReadStream } from 'fs';
-import { fileURLToPath } from 'url';
-import gallery from './lib/gallery.js';
+'use strict';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
+const { join } = require('path');
+const { createReadStream } = require('fs');
+const gallery = require('./lib/gallery');
 
 // Register the tag
 hexo.extend.tag.register('gallery', gallery);
