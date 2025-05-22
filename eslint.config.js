@@ -44,9 +44,9 @@ export default [
       ecmaVersion: 2018,
       sourceType: 'module',
       globals: {
-        ...globals.node,
+        ...globals.browser,
         ...globals.mocha,
-        ...globals.hexo,
+        hexo: 'writable',
       },
       parserOptions: {
         requireConfigFile: false,
