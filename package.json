@@ -1,6 +1,6 @@
 {
   "name": "hexo-gallery-slider",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "A responsive gallery slider plugin for Hexo",
   "main": "index.js",
   "scripts": {
