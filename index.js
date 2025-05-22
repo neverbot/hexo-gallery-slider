@@ -23,7 +23,7 @@ hexo.extend.filter.register('after_generate', () => {
 
   // Copy assets to public folder
   hexo.route.set('gallery/style.css', () =>
-    createReadStream(join(__dirname, 'source/css/gallery-slider.styl')),
+    createReadStream(join(__dirname, 'source/css/gallery-slider.css')),
   );
 
   hexo.route.set('gallery/script.js', () =>
