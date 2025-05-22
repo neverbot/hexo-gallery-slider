@@ -34,6 +34,7 @@ module.exports = [
         ...globals.browser,
         ...globals.mocha,
         ...globals.node,
+        ...globals.jquery,
         hexo: 'writable',
       },
       parserOptions: {

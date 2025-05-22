@@ -1,76 +1,88 @@
 function galleries() {
-  document.querySelectorAll('.slider-wrap').forEach((sliderWrap) => {
-    const width = sliderWrap.offsetWidth;
+  $('.slider-wrap').each(function (index, value) {
+    const $this = $(value);
+    const width = $this.width();
 
-    // Store data in element's dataset
-    sliderWrap.dataset.pos = 0;
-    sliderWrap.dataset.totalSlides = sliderWrap.querySelectorAll('ul li').length;
-    sliderWrap.dataset.sliderWidth = width;
+    // current position
+    $this.data('pos', 0);
+    // number of slides
+    $this.data('totalSlides', $this.find('ul li').length);
+    // get the slide width
+    $this.data('sliderWidth', width);
 
-    // Set width of all images
-    sliderWrap.querySelectorAll('img').forEach((img) => {
-      img.style.width = `${width}px`;
+    // set width of all img children of $this
+    $this.find('img').css({
+      width: width + 'px',
     });
 
-    // Set height based on first image
-    const firstImage = sliderWrap.querySelector('img');
-    const height = firstImage.offsetHeight || firstImage.naturalHeight;
-    sliderWrap.style.height = `${height}px`;
+    // get the height of the first image, and use it
+    // as the slider height
+    const height = $this.find('img:first').height();
+    $this.height(height);
 
-    // Set dimensions for slider items
-    sliderWrap.querySelectorAll('.slider li').forEach((li) => {
-      li.style.height = `${height}px`;
-      li.style.width = `${width}px`;
+    $this.find('.slider li').height(height);
+    $this.find('.slider li').width(width);
+
+    /*****************
+     BUILD THE SLIDER
+    *****************/
+    // set width to be 'x' times the number of slides
+    $this.find('ul.slider').width($this.data('sliderWidth') * $this.data('totalSlides'));
+
+    // next slide
+    $this.find('.next').click(function () {
+      slideRight($this);
     });
 
-    // Set total slider width
-    const slider = sliderWrap.querySelector('ul.slider');
-    slider.style.width = `${width * Number(sliderWrap.dataset.totalSlides)}px`;
-
-    // Event listeners
-    sliderWrap.querySelector('.next').addEventListener('click', (e) => {
-      e.preventDefault();
-      slideRight(sliderWrap);
-    });
-    sliderWrap.querySelector('.previous').addEventListener('click', (e) => {
-      e.preventDefault();
-      slideLeft(sliderWrap);
+    // previous slide
+    $this.find('.previous').click(function () {
+      slideLeft($this);
     });
 
-    // Create pagination
-    const paginationList = sliderWrap.querySelector('.pagination-wrap ul');
-    for (let i = 0; i < sliderWrap.dataset.totalSlides; i++) {
-      const li = document.createElement('li');
-      paginationList.appendChild(li);
-    }
+    /*************************
+     //*> OPTIONAL SETTINGS
+    ************************/
+    // automatic slider
+    // let autoSlider = setInterval(slideRight, 3000, $this);
 
-    // Initial setup
-    countSlides(sliderWrap);
-    pagination(sliderWrap);
-
-    // Hover effects
-    sliderWrap.addEventListener('mouseenter', () => {
-      sliderWrap.classList.add('active');
+    // for each slide
+    $.each($this.find('ul li'), () => {
+      // create a pagination
+      $this.find('.pagination-wrap ul').append(document.createElement('li'));
     });
 
-    sliderWrap.addEventListener('mouseleave', () => {
-      sliderWrap.classList.remove('active');
-    });
+    // counter
+    countSlides($this);
+
+    // pagination
+    pagination($this);
+
+    // hide/show controls/btns when hover
+    // pause automatic slide when hover
+    $this.hover(
+      () => {
+        $(this).addClass('active');
+        // clearInterval(autoSlider);
+      },
+      () => {
+        $(this).removeClass('active');
+        // autoSlider = setInterval(slideRight, 3000, $this);
+      },
+    );
   });
 
   /***********
    SLIDE LEFT
   ************/
   function slideLeft(elem) {
-    let pos = Number(elem.dataset.pos) - 1;
-    if (pos < 0) {
-      pos = Number(elem.dataset.totalSlides) - 1;
+    elem.data('pos', elem.data('pos') - 1);
+    if (elem.data('pos') < 0) {
+      elem.data('pos', elem.data('totalSlides') - 1);
     }
-    elem.dataset.pos = pos;
 
-    const slider = elem.querySelector('ul.slider');
-    slider.style.left = `${-(elem.dataset.sliderWidth * pos)}px`;
+    elem.find('ul.slider').css('left', -(elem.data('sliderWidth') * elem.data('pos')));
 
+    //* > optional
     countSlides(elem);
     pagination(elem);
   }
@@ -79,15 +91,14 @@ function galleries() {
    SLIDE RIGHT
   *************/
   function slideRight(elem) {
-    let pos = Number(elem.dataset.pos) + 1;
-    if (pos >= elem.dataset.totalSlides) {
-      pos = 0;
+    elem.data('pos', elem.data('pos') + 1);
+    if (elem.data('pos') >= elem.data('totalSlides')) {
+      elem.data('pos', 0);
     }
-    elem.dataset.pos = pos;
 
-    const slider = elem.querySelector('ul.slider');
-    slider.style.left = `${-(elem.dataset.sliderWidth * pos)}px`;
+    elem.find('ul.slider').css('left', -(elem.data('sliderWidth') * elem.data('pos')));
 
+    //* > optional
     countSlides(elem);
     pagination(elem);
   }
@@ -97,14 +108,12 @@ function galleries() {
  //*> OPTIONAL SETTINGS
 ************************/
 function countSlides(elem) {
-  const counter = elem.querySelector('.counter');
-  counter.textContent = `${Number(elem.dataset.pos) + 1} / ${elem.dataset.totalSlides}`;
+  elem.children('.counter').html(elem.data('pos') + 1 + ' / ' + elem.data('totalSlides'));
 }
 
 function pagination(elem) {
-  const paginationItems = elem.querySelectorAll('.pagination-wrap ul li');
-  paginationItems.forEach((item) => item.classList.remove('active'));
-  paginationItems[elem.dataset.pos].classList.add('active');
+  elem.find('.pagination-wrap ul li').removeClass('active');
+  elem.find('.pagination-wrap ul li:eq(' + elem.data('pos') + ')').addClass('active');
 }
 
 // hack to wait until the DOM is really loaded
@@ -116,5 +125,7 @@ function pagination(elem) {
 //     : document.addEventListener('DOMContentLoaded', cb);
 // };
 
-// Wait for DOM content to be fully loaded
-window.addEventListener('load', galleries);
+$(window).on('load', function () {
+  // domReady(galleries);
+  galleries();
+});
