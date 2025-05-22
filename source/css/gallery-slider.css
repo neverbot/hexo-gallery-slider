@@ -33,14 +33,6 @@
   position: absolute;
 }
 
-.hexo-gallery-slider .slider-wrap ul.slider li i {
-  text-align: center;
-  line-height: 400px;
-  display: block;
-  width: 100%;
-  font-size: 90px;
-}
-
 .hexo-gallery-slider .slider-wrap ul.slider img {
   margin: 0;
 }
@@ -62,6 +54,14 @@
   -khtml-user-select: none;
   -ms-user-select: none;
   transition: all 0.1s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hexo-gallery-slider .btns svg {
+  width: 35px;
+  height: 35px;
 }
 
 .hexo-gallery-slider .btns:hover {
