@@ -1,7 +1,15 @@
 .hexo-gallery-slider {
+  opacity: 0;
+  transition: opacity 0.3s ease;
   position: relative;
   color: #fff;
   text-shadow: rgba(0,0,0,0.1) 2px 2px 0px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.hexo-gallery-slider.initialized {
+  opacity: 1;
 }
 
 .hexo-gallery-slider ul {
@@ -12,6 +20,7 @@
 .hexo-gallery-slider .slider-wrap {
   position: relative;
   overflow: hidden;
+  width: 100%;
 }
 
 .hexo-gallery-slider .slider-wrap ul.slider {
@@ -20,21 +29,33 @@
   position: absolute;
   top: 0;
   left: 0;
+  display: flex;
+  align-items: center;
 }
 
 .hexo-gallery-slider .slider-wrap ul.slider li {
   float: left;
   position: relative;
   width: 100%;
+  height: 100%;
   list-style-type: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .hexo-gallery-slider .slider-wrap ul.slider li > div {
   position: absolute;
+  width: 100%;
+  height: 100%;
 }
 
 .hexo-gallery-slider .slider-wrap ul.slider img {
   margin: 0;
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+  display: block;
 }
 
 /* Buttons */
