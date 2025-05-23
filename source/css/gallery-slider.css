@@ -111,6 +111,44 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   z-index: 1;
+  width: 4em;
+  height: 1.4em;
+  text-align: center;
+  overflow: hidden;
+  height: 29px;
+}
+
+.hexo-gallery-slider .counter .counter-value {
+  position: absolute;
+  top: 5px;
+  left: 10px;
+  right: 10px;
+}
+
+.hexo-gallery-slider .counter .counter-value.hidden {
+  display: none;
+}
+
+.hexo-gallery-slider .counter .counter-value.active {
+  display: block;
+}
+
+.hexo-gallery-slider .counter-text {
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  top: 5px;
+  transition: opacity 0.3s ease;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.hexo-gallery-slider .counter-text.next {
+  opacity: 0;
+}
+
+.hexo-gallery-slider .counter-text.current {
+  opacity: 1;
 }
 
 .hexo-gallery-slider .slider-wrap.active .next {

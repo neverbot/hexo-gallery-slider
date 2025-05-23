@@ -104,6 +104,17 @@ const galleries = () => {
         }
       }
 
+      // Setup all possible counter values
+      const counter = sliderWrap.querySelector('.counter');
+      if (counter) {
+        const counterHtml = Array.from(
+          { length: totalSlides },
+          (_, i) =>
+            `<span class="counter-value${i === 0 ? ' active' : ' hidden'}">${i + 1} / ${totalSlides}</span>`,
+        ).join('');
+        counter.innerHTML = counterHtml;
+      }
+
       // Set up counter and pagination
       countSlides(sliderWrap);
       pagination(sliderWrap);
@@ -197,8 +208,16 @@ const countSlides = (elem) => {
   const counter = elem.querySelector('.counter');
   if (counter) {
     const pos = parseInt(elem.dataset.pos);
-    const total = parseInt(elem.dataset.totalSlides);
-    counter.textContent = `${pos + 1} / ${total}`;
+    const counters = counter.querySelectorAll('.counter-value');
+    counters.forEach((c, i) => {
+      if (i === pos) {
+        c.classList.remove('hidden');
+        c.classList.add('active');
+      } else {
+        c.classList.remove('active');
+        c.classList.add('hidden');
+      }
+    });
   }
 };
 
