@@ -1,110 +1,125 @@
 const galleries = () => {
   // Handle single images
-  $('.hexo-gallery-slider > img').each((index, img) => {
-    const $img = $(img);
-    const $gallery = $img.parent();
+  document.querySelectorAll('.hexo-gallery-slider > img').forEach((img) => {
+    const gallery = img.parentElement;
 
-    if ($img[0].complete) {
-      $gallery.addClass('initialized');
+    if (img.complete) {
+      gallery.classList.add('initialized');
     } else {
-      $img.on('load', function () {
-        $gallery.addClass('initialized');
+      img.addEventListener('load', () => {
+        gallery.classList.add('initialized');
       });
     }
   });
 
   // Handle slider galleries
-  $('.slider-wrap').each((index, value) => {
-    const $this = $(value);
-    const width = $this.width();
-    const $gallery = $this.closest('.hexo-gallery-slider');
+  document.querySelectorAll('.slider-wrap').forEach((sliderWrap) => {
+    const width = sliderWrap.offsetWidth;
+    const gallery = sliderWrap.closest('.hexo-gallery-slider');
 
-    // current position
-    $this.data('pos', 0);
-    // number of slides
-    const totalSlides = $this.find('ul li').length;
-    $this.data('totalSlides', totalSlides);
-    // get the slide width
-    $this.data('sliderWidth', width);
+    // Store data using dataset API
+    sliderWrap.dataset.pos = '0';
+    const totalSlides = sliderWrap.querySelectorAll('ul li').length;
+    sliderWrap.dataset.totalSlides = totalSlides.toString();
+    sliderWrap.dataset.sliderWidth = width.toString();
 
     // Track loading of all images
     let loadedImages = 0;
 
     // Function to set dimensions once image is available
     const setDimensions = () => {
-      // Calculate height based on the natural aspect ratio of the first image
-      const naturalWidth = $firstImage[0].naturalWidth;
-      const naturalHeight = $firstImage[0].naturalHeight;
+      const firstImage = sliderWrap.querySelector('img');
+      const naturalWidth = firstImage.naturalWidth;
+      const naturalHeight = firstImage.naturalHeight;
       const aspectRatio = naturalHeight / naturalWidth;
       const height = width * aspectRatio;
 
       if (height > 0 && !isNaN(height)) {
         // Set dimensions maintaining aspect ratio
-        $this.find('img').css({
-          width: width + 'px',
-          height: height + 'px',
+        sliderWrap.querySelectorAll('img').forEach((img) => {
+          img.style.width = `${width}px`;
+          img.style.height = `${height}px`;
         });
 
-        $this.height(height);
-        $this.find('.slider li').height(height);
-        $this.find('.slider li').width(width);
+        sliderWrap.style.height = `${height}px`;
+        sliderWrap.querySelectorAll('.slider li').forEach((li) => {
+          li.style.height = `${height}px`;
+          li.style.width = `${width}px`;
+        });
       }
     };
 
     const completeInitialization = () => {
       // Set dimensions and slider width all at once
       setDimensions();
-      $this.find('ul.slider').width($this.data('sliderWidth') * $this.data('totalSlides'));
+      const slider = sliderWrap.querySelector('ul.slider');
+      slider.style.width = `${width * totalSlides}px`;
 
       // next slide
-      $this
-        .find('.next')
-        .off('click')
-        .on('click', (e) => {
+      const nextBtn = sliderWrap.querySelector('.next');
+      if (nextBtn) {
+        nextBtn.addEventListener('click', (e) => {
           e.preventDefault();
           e.stopPropagation();
           e.stopImmediatePropagation();
           // const scrollPos = window.scrollY;
-          slideRight($this);
-          // window.scrollTo(0, scrollPos);
+          slideRight(sliderWrap);
+          // requestAnimationFrame(() => {
+          //   window.scrollTo(0, scrollPos);
+          // });
         });
+      }
 
       // previous slide
-      $this
-        .find('.previous')
-        .off('click')
-        .on('click', (e) => {
+      const prevBtn = sliderWrap.querySelector('.previous');
+      if (prevBtn) {
+        prevBtn.addEventListener('click', (e) => {
           e.preventDefault();
           e.stopPropagation();
           e.stopImmediatePropagation();
           // const scrollPos = window.scrollY;
-          slideLeft($this);
-          // window.scrollTo(0, scrollPos);
+          slideLeft(sliderWrap);
+          // requestAnimationFrame(() => {
+          //   window.scrollTo(0, scrollPos);
+          // });
         });
+      }
 
-      // for each slide
-      $.each($this.find('ul li'), () => {
-        // create a pagination
-        $this.find('.pagination-wrap ul').append(document.createElement('li'));
-      });
+      // create pagination dots
+      const paginationUl = sliderWrap.querySelector('.pagination-wrap ul');
+      if (paginationUl) {
+        for (let i = 0; i < totalSlides; i++) {
+          const li = document.createElement('li');
+          li.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            // const scrollPos = window.scrollY;
+            select(sliderWrap, i);
+            // requestAnimationFrame(() => {
+            //   window.scrollTo(0, scrollPos);
+            // });
+          });
+          paginationUl.appendChild(li);
+        }
+      }
 
       // Set up counter and pagination
-      countSlides($this);
-      pagination($this);
+      countSlides(sliderWrap);
+      pagination(sliderWrap);
 
       // Make gallery visible once everything is ready
-      $gallery.addClass('initialized');
+      gallery.classList.add('initialized');
     };
 
-    // Get first image and handle all images loading
-    const $firstImage = $this.find('img:first');
-    const $allImages = $this.find('img');
-
+    // Get all images and handle loading
+    const images = Array.from(sliderWrap.querySelectorAll('img'));
     let allLoaded = true;
-    $allImages.each(function () {
-      if (!this.complete) {
+
+    images.forEach((img) => {
+      if (!img.complete) {
         allLoaded = false;
-        $(this).on('load', () => {
+        img.addEventListener('load', () => {
           loadedImages++;
           if (loadedImages === totalSlides) {
             completeInitialization();
@@ -120,13 +135,12 @@ const galleries = () => {
     }
 
     // hide/show controls/btns when hover
-    $this
-      .on('mouseenter', function () {
-        $(this).addClass('active');
-      })
-      .on('mouseleave', function () {
-        $(this).removeClass('active');
-      });
+    sliderWrap.addEventListener('mouseenter', () => {
+      sliderWrap.classList.add('active');
+    });
+    sliderWrap.addEventListener('mouseleave', () => {
+      sliderWrap.classList.remove('active');
+    });
   });
 };
 
@@ -134,24 +148,43 @@ const galleries = () => {
  //*> SLIDER FUNCTIONS
 ************************/
 const slideLeft = (elem) => {
-  elem.data('pos', elem.data('pos') - 1);
-  if (elem.data('pos') < 0) {
-    elem.data('pos', elem.data('totalSlides') - 1);
+  let pos = parseInt(elem.dataset.pos);
+  pos--;
+  if (pos < 0) {
+    pos = parseInt(elem.dataset.totalSlides) - 1;
   }
+  elem.dataset.pos = pos.toString();
 
-  elem.find('ul.slider').css('left', -(elem.data('sliderWidth') * elem.data('pos')));
+  const width = parseInt(elem.dataset.sliderWidth);
+  const slider = elem.querySelector('ul.slider');
+  slider.style.left = `${-(width * pos)}px`;
 
   countSlides(elem);
   pagination(elem);
 };
 
 const slideRight = (elem) => {
-  elem.data('pos', elem.data('pos') + 1);
-  if (elem.data('pos') >= elem.data('totalSlides')) {
-    elem.data('pos', 0);
+  let pos = parseInt(elem.dataset.pos);
+  pos++;
+  if (pos >= parseInt(elem.dataset.totalSlides)) {
+    pos = 0;
   }
+  elem.dataset.pos = pos.toString();
 
-  elem.find('ul.slider').css('left', -(elem.data('sliderWidth') * elem.data('pos')));
+  const width = parseInt(elem.dataset.sliderWidth);
+  const slider = elem.querySelector('ul.slider');
+  slider.style.left = `${-(width * pos)}px`;
+
+  countSlides(elem);
+  pagination(elem);
+};
+
+const select = (elem, index) => {
+  elem.dataset.pos = index.toString();
+
+  const width = parseInt(elem.dataset.sliderWidth);
+  const slider = elem.querySelector('ul.slider');
+  slider.style.left = `${-(width * index)}px`;
 
   countSlides(elem);
   pagination(elem);
@@ -161,21 +194,17 @@ const slideRight = (elem) => {
  //*> UI UPDATE FUNCTIONS
 ************************/
 const countSlides = (elem) => {
-  // Convert jQuery element to vanilla DOM element if needed
-  const domElem = elem[0] || elem;
-  const counter = domElem.querySelector('.counter');
-  const pos = parseInt(elem.data('pos'));
-  const total = parseInt(elem.data('totalSlides'));
+  const counter = elem.querySelector('.counter');
   if (counter) {
+    const pos = parseInt(elem.dataset.pos);
+    const total = parseInt(elem.dataset.totalSlides);
     counter.textContent = `${pos + 1} / ${total}`;
   }
 };
 
 const pagination = (elem) => {
-  // Convert jQuery element to vanilla DOM element if needed
-  const domElem = elem[0] || elem;
-  const dots = domElem.querySelectorAll('.pagination-wrap ul li');
-  const pos = parseInt(elem.data('pos'));
+  const dots = elem.querySelectorAll('.pagination-wrap ul li');
+  const pos = parseInt(elem.dataset.pos);
 
   dots.forEach((dot, index) => {
     if (index === pos) {
@@ -186,13 +215,9 @@ const pagination = (elem) => {
   });
 };
 
-// Function to initialize galleries
-const initGalleries = () => {
-  // Wait for window load to ensure images are loaded
-  window.addEventListener('load', () => {
-    galleries();
-  });
-};
-
-// Start the initialization process
-initGalleries();
+// Start gallery initialization when DOM is ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', galleries);
+} else {
+  galleries();
+}
