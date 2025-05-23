@@ -1,6 +1,6 @@
-function galleries() {
+const galleries = () => {
   // Handle single images
-  $('.hexo-gallery-slider > img').each(function (index, img) {
+  $('.hexo-gallery-slider > img').each((index, img) => {
     const $img = $(img);
     const $gallery = $img.parent();
 
@@ -14,7 +14,7 @@ function galleries() {
   });
 
   // Handle slider galleries
-  $('.slider-wrap').each(function (index, value) {
+  $('.slider-wrap').each((index, value) => {
     const $this = $(value);
     const width = $this.width();
     const $gallery = $this.closest('.hexo-gallery-slider');
@@ -31,7 +31,7 @@ function galleries() {
     let loadedImages = 0;
 
     // Function to set dimensions once image is available
-    const setDimensions = function () {
+    const setDimensions = () => {
       // Calculate height based on the natural aspect ratio of the first image
       const naturalWidth = $firstImage[0].naturalWidth;
       const naturalHeight = $firstImage[0].naturalHeight;
@@ -51,20 +51,36 @@ function galleries() {
       }
     };
 
-    const completeInitialization = function () {
+    const completeInitialization = () => {
       // Set dimensions and slider width all at once
       setDimensions();
       $this.find('ul.slider').width($this.data('sliderWidth') * $this.data('totalSlides'));
 
       // next slide
-      $this.find('.next').click(function () {
-        slideRight($this);
-      });
+      $this
+        .find('.next')
+        .off('click')
+        .on('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          e.stopImmediatePropagation();
+          // const scrollPos = window.scrollY;
+          slideRight($this);
+          // window.scrollTo(0, scrollPos);
+        });
 
       // previous slide
-      $this.find('.previous').click(function () {
-        slideLeft($this);
-      });
+      $this
+        .find('.previous')
+        .off('click')
+        .on('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          e.stopImmediatePropagation();
+          // const scrollPos = window.scrollY;
+          slideLeft($this);
+          // window.scrollTo(0, scrollPos);
+        });
 
       // for each slide
       $.each($this.find('ul li'), () => {
@@ -88,7 +104,7 @@ function galleries() {
     $allImages.each(function () {
       if (!this.complete) {
         allLoaded = false;
-        $(this).on('load', function () {
+        $(this).on('load', () => {
           loadedImages++;
           if (loadedImages === totalSlides) {
             completeInitialization();
@@ -104,74 +120,79 @@ function galleries() {
     }
 
     // hide/show controls/btns when hover
-    $this.hover(
-      () => {
+    $this
+      .on('mouseenter', function () {
         $(this).addClass('active');
-      },
-      () => {
+      })
+      .on('mouseleave', function () {
         $(this).removeClass('active');
-      },
-    );
+      });
   });
-
-  /***********
-   SLIDE LEFT
-  ************/
-  function slideLeft(elem) {
-    elem.data('pos', elem.data('pos') - 1);
-    if (elem.data('pos') < 0) {
-      elem.data('pos', elem.data('totalSlides') - 1);
-    }
-
-    elem.find('ul.slider').css('left', -(elem.data('sliderWidth') * elem.data('pos')));
-
-    //* > optional
-    countSlides(elem);
-    pagination(elem);
-  }
-
-  /************
-   SLIDE RIGHT
-  *************/
-  function slideRight(elem) {
-    elem.data('pos', elem.data('pos') + 1);
-    if (elem.data('pos') >= elem.data('totalSlides')) {
-      elem.data('pos', 0);
-    }
-
-    elem.find('ul.slider').css('left', -(elem.data('sliderWidth') * elem.data('pos')));
-
-    //* > optional
-    countSlides(elem);
-    pagination(elem);
-  }
-}
+};
 
 /************************
- //*> OPTIONAL SETTINGS
+ //*> SLIDER FUNCTIONS
 ************************/
-function countSlides(elem) {
-  elem.children('.counter').html(elem.data('pos') + 1 + ' / ' + elem.data('totalSlides'));
-}
-
-function pagination(elem) {
-  elem.find('.pagination-wrap ul li').removeClass('active');
-  elem.find('.pagination-wrap ul li:eq(' + elem.data('pos') + ')').addClass('active');
-}
-
-// Function to initialize galleries once jQuery is available
-function initGalleries() {
-  if (typeof jQuery === 'undefined') {
-    // If jQuery is not loaded yet, wait and try again
-    setTimeout(initGalleries, 100);
-    return;
+const slideLeft = (elem) => {
+  elem.data('pos', elem.data('pos') - 1);
+  if (elem.data('pos') < 0) {
+    elem.data('pos', elem.data('totalSlides') - 1);
   }
 
+  elem.find('ul.slider').css('left', -(elem.data('sliderWidth') * elem.data('pos')));
+
+  countSlides(elem);
+  pagination(elem);
+};
+
+const slideRight = (elem) => {
+  elem.data('pos', elem.data('pos') + 1);
+  if (elem.data('pos') >= elem.data('totalSlides')) {
+    elem.data('pos', 0);
+  }
+
+  elem.find('ul.slider').css('left', -(elem.data('sliderWidth') * elem.data('pos')));
+
+  countSlides(elem);
+  pagination(elem);
+};
+
+/************************
+ //*> UI UPDATE FUNCTIONS
+************************/
+const countSlides = (elem) => {
+  // Convert jQuery element to vanilla DOM element if needed
+  const domElem = elem[0] || elem;
+  const counter = domElem.querySelector('.counter');
+  const pos = parseInt(elem.data('pos'));
+  const total = parseInt(elem.data('totalSlides'));
+  if (counter) {
+    counter.textContent = `${pos + 1} / ${total}`;
+  }
+};
+
+const pagination = (elem) => {
+  // Convert jQuery element to vanilla DOM element if needed
+  const domElem = elem[0] || elem;
+  const dots = domElem.querySelectorAll('.pagination-wrap ul li');
+  const pos = parseInt(elem.data('pos'));
+
+  dots.forEach((dot, index) => {
+    if (index === pos) {
+      dot.classList.add('active');
+    } else {
+      dot.classList.remove('active');
+    }
+  });
+};
+
+// Function to initialize galleries
+const initGalleries = () => {
   // Wait for window load to ensure images are loaded
-  $(window).on('load', function () {
+  window.addEventListener('load', () => {
     galleries();
   });
-}
+};
 
 // Start the initialization process
 initGalleries();
