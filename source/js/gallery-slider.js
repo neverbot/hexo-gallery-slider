@@ -21,7 +21,12 @@ const getLightbox = (closeLabel) => {
   close.type = 'button';
   close.className = 'gallery-lightbox-close';
   close.setAttribute('aria-label', closeLabel || 'Close');
-  close.textContent = '×';
+  // drawn as an SVG: the × character sits on the text baseline and does not
+  // centre in the circle the same way in every font
+  close.innerHTML =
+    '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">' +
+    '<path d="M5 5l14 14M19 5L5 19" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>' +
+    '</svg>';
   close.addEventListener('click', () => lightbox.close());
 
   const img = document.createElement('img');
