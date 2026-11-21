@@ -227,8 +227,10 @@
   width: 100%;
 }
 
+/* 9px on each side keeps the dots' centres at least 24px apart, the minimum
+   spacing for small touch targets */
 .hexo-gallery-slider .pagination-wrap ul li {
-  margin: 0 5px;
+  margin: 0 9px;
   display: inline-block;
   width: 7px;
   height: 7px;
@@ -249,10 +251,15 @@
   box-shadow: rgba(0,0,0,0.1) 1px 1px 0;
 }
 
-/* each dot is a button filling its li, with a 24px target around it */
+/* each dot is a transparent 24px button centred on its li, which draws the
+   visible dot */
 .hexo-gallery-slider .pagination-wrap button {
   position: absolute;
-  inset: 0;
+  top: 50%;
+  left: 50%;
+  width: 24px;
+  height: 24px;
+  transform: translate(-50%, -50%);
   padding: 0;
   border: 0;
   border-radius: 50%;
@@ -260,15 +267,9 @@
   cursor: pointer;
 }
 
-.hexo-gallery-slider .pagination-wrap button::after {
-  content: "";
-  position: absolute;
-  inset: -8px;
-}
-
 .hexo-gallery-slider .pagination-wrap button:focus-visible {
   outline: 2px solid #fff;
-  outline-offset: 2px;
+  outline-offset: -4px;
 }
 
 @media (prefers-reduced-motion: reduce) {
